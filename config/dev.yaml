@@ -1,0 +1,53 @@
+## Global Config
+global:
+  ## A general name that will be used on the resources
+  name: k8s-infra
+  ## The project environment to run with: can be dev, tst, acc, staging, prd, etc...
+  environment: dev
+  ## The Azure location of the resources
+  azLocation: "north europe"
+
+## Network Config
+network:
+  ## Azure VNET address cidr
+  addressSpace: "10.0.0.0/8"
+  ## Subnets Config
+  subnets:
+    - name: main
+      cidr: "10.1.0.0/16"
+      ## If enabled, it will create an NSG and attach it to the subnet
+      createNsg: false
+      ## Each NSG will be attached to the subnet defined in this section
+      ## Below you can define the NSG rules
+      nsgRules: []
+        # - name: "https"
+        #   priority: 502
+          # direction: "Inbound"           # Optional, default value 'Inbound'
+          # access: "Allow"                # Optional, default value 'Allow'
+          # protocol: "Tcp"                # Optional, default value 'Tcp'
+          # sourceAddressPrefix: "*"       # Optional, default value '*'
+          # sourcePortRange: "*"           # Optional, default value '*'
+          # destinationAddressPrefix: "*"  # Optional, default value '*'
+          # destinationPortRange: "443"
+    - name: bastion
+      cidr: "10.120.20.0/24"
+      createNsg: true
+      nsgRules: []
+
+## Public/Private DNS Zones
+dns:
+  public: 
+    enabled: true
+    name: public-example.com
+  private:
+    enabled: true
+    name: domain.internal
+
+## Additional Tags to be attached to the resources
+tags:
+  - key: contact
+    value: ibraheemalsaady
+  - key: dept
+    value: financials
+  - key: team
+    value: devOps-platforms

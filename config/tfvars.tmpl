@@ -1,0 +1,56 @@
+## Global
+name = "{{ (datasource "config").global.name }}"
+
+environment = "{{ (datasource "config").global.environment }}"
+
+az_location = "{{ (datasource "config").global.azLocation }}"
+
+## DNS
+public_dns_zone_enabled = "{{ (datasource "config").dns.public.enabled }}"
+public_dns_zone = "{{ (datasource "config").dns.public.name }}"
+
+private_dns_zone_enabled = "{{ (datasource "config").dns.private.enabled }}"
+private_dns_zone = "{{ (datasource "config").dns.private.name }}"
+
+## Network
+vnet_address_space = "{{ (datasource "config").network.addressSpace }}"
+
+subnets = {
+{{- range $subnet := (datasource "config").network.subnets }}
+  "{{ $subnet.name }}" = "{{ $subnet.cidr }}",
+{{- end }}
+}
+
+nsgs = [
+  {{- range $subnet := (datasource "config").network.subnets }}
+  {{- $subnetName := $subnet.name }}
+  {{- if eq $subnet.createNsg true }}
+    "{{ $subnetName }}",
+  {{- end }}
+  {{- end }}
+]
+
+nsg_rules = {
+{{- range $subnet := (datasource "config").network.subnets }}
+{{- $subnetName := $subnet.name }}
+{{- range $rule := $subnet.nsgRules }}
+  "{{ $rule.name }}" = {
+    priority = "{{ $rule.priority }}"
+    direction = "{{ if has $rule "direction" }}{{ $rule.direction }}{{ else }}Inbound{{ end }}"
+    access = "{{ if has $rule "access" }}{{ $rule.access }}{{ else }}Allow{{ end }}"
+    protocol = "{{ if has $rule "protocol" }}{{ $rule.protocol }}{{ else }}Tcp{{ end }}"
+    source_address_prefix = "{{ if has $rule "sourceAddressPrefix" }}{{ $rule.sourceAddressPrefix }}{{ else }}*{{ end }}"
+    source_port_range = "{{ if has $rule "sourcePortRange" }}{{ $rule.sourcePortRange }}{{ else }}*{{ end }}"
+    destination_address_prefix = "{{ if has $rule "destinationAddressPrefix" }}{{ $rule.destinationAddressPrefix }}{{ else }}*{{ end }}"
+    destination_port_range = "{{ $rule.destinationPortRange }}"
+    subnet = "{{ $subnetName }}"
+  }
+{{- end }}
+{{- end }}
+}
+
+tags = {
+  {{- range $tag := (datasource "config").tags }}
+  "{{ $tag.key }}" = "{{ $tag.value }}",
+{{- end }}
+}
