@@ -1,8 +1,3 @@
-provider "azurerm" {
-  version = "=2.20.0"
-  features {}
-}
-
 resource "azurerm_resource_group" "infra_rg" {
   name     = "rg-${var.environment}-${var.name}"
   location = var.az_location
