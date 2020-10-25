@@ -4,7 +4,7 @@ provider "azurerm" {
 }
 
 resource "azurerm_resource_group" "infra_rg" {
-  name     = "rg-${var.environment}-infra"
+  name     = "rg-${var.environment}-${var.name}"
   location = var.az_location
 
   tags = local.common_tags

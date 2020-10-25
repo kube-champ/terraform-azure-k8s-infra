@@ -45,9 +45,11 @@ dns:
 
 ## Additional Tags to be attached to the resources
 tags:
+  - key: provisioner
+    value: terraform
+  - key: owner
+    value: devops-team
   - key: contact
     value: ibraheemalsaady
-  - key: dept
-    value: financials
-  - key: team
-    value: devOps-platforms
+  - key: costCenter
+    value: finance-123
