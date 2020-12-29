@@ -1,0 +1,41 @@
+version: 2.1
+
+# Define the jobs we want to run for this project
+jobs:
+  build:
+    docker:
+      - image: hashicorp/terraform:0.14.3
+    steps:
+      - checkout
+      - run:
+          name: terraform init & validate
+          command: |
+            terraform init
+            terraform validate
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  plan:
+    docker:
+      - image: hashicorp/terraform:0.14.3
+    steps:
+      - checkout
+      - run:
+          name: terraform plan
+          command: |
+            terraform plan \
+              -var name=ci-test \
+              -var public_dns_zone="test.example" \
+              -var private_dns_zone="test.internal" \
+              -var public_dns_zone_enabled=true \
+              -var private_dns_zone_enabled=true
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - plan:
+        requires:
+            - build
