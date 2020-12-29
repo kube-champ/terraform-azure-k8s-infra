@@ -12,8 +12,7 @@ The naming convention of the resources are based on the [Azure Naming Convention
 ```terraform
 module "k8s-infra" {
   source  = "kube-champ/k8s-infra/azure"
-  version = "0.0.1" # <-- change version  
-  # insert the 5 required variables here
+  ...
 }
 ```
 
