@@ -20,7 +20,8 @@ jobs:
     docker:
       - image: hashicorp/terraform:0.14.3
     steps:
-      - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: terraform plan
           command: |
@@ -39,3 +40,5 @@ workflows:
       - plan:
           requires:
             - build
+          context:
+            - azure-credentials
