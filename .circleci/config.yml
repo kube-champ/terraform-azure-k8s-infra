@@ -1,5 +1,7 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.2
 # Define the jobs we want to run for this project
 jobs:
   build:
@@ -23,6 +25,10 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: "install packages"
+          command: |
+            apk add curl jq
+      - run:
           name: terraform plan
           command: |
             terraform plan \
@@ -31,6 +37,14 @@ jobs:
               -var private_dns_zone="test.internal" \
               -var public_dns_zone_enabled=true \
               -var private_dns_zone_enabled=true
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+          mentions: "@Ibraheem Al Saady"
+      # When there is a successful deployment, send a notification with a different template.
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 
 # Orchestrate our job run sequence
 workflows:
@@ -42,3 +56,4 @@ workflows:
             - build
           context:
             - azure-credentials
+            - slack-notify
