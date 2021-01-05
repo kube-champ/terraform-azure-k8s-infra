@@ -5,24 +5,32 @@ variable "name" {
   type        = string
 }
 
-variable "public_dns_zone" {
-  description = "A public DNS Zone name"
-  type        = string
-}
-
-variable "private_dns_zone" {
-  description = "A private DNS Zone name"
-  type        = string
-}
-
 variable "public_dns_zone_enabled" {
   description = "A flag whether the public DNS zone should be created"
   type        = bool
+
+  default = false
 }
 
 variable "private_dns_zone_enabled" {
   description = "A flag whether the private DNS zone should be created"
   type        = bool
+
+  default = false
+}
+
+variable "public_dns_zone" {
+  description = "A public DNS Zone name"
+  type        = string
+
+  default = ""
+}
+
+variable "private_dns_zone" {
+  description = "A private DNS Zone name"
+  type        = string
+
+  default = ""
 }
 
 variable "environment" {
@@ -36,7 +44,7 @@ variable "az_location" {
   description = "The azure location on which the resources will be deployed"
   type        = string
 
-  default = "North Europe"
+  default = "West Europe"
 }
 
 variable "vnet_address_space" {

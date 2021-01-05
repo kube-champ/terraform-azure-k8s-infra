@@ -1,3 +1,5 @@
+## block-kit-builder: https://app.slack.com/block-kit-builder
+
 version: 2.1
 
 orbs:
@@ -12,8 +14,8 @@ jobs:
       - run:
           name: terraform init & validate
           command: |
-            terraform init
-            terraform validate
+            terraform init examples/infra-with-nsgs
+            terraform validate examples/infra-with-nsgs
       - persist_to_workspace:
           root: .
           paths:
@@ -31,12 +33,7 @@ jobs:
       - run:
           name: terraform plan
           command: |
-            terraform plan \
-              -var name=ci-test \
-              -var public_dns_zone="test.example" \
-              -var private_dns_zone="test.internal" \
-              -var public_dns_zone_enabled=true \
-              -var private_dns_zone_enabled=true
+            terraform plan examples/infra-with-nsgs
       - slack/notify:
           event: fail
           template: basic_fail_1
